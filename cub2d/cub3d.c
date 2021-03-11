@@ -11,7 +11,6 @@ void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 		dst[y * (int)game_data.resolution_x + x] = color;
 }
 
-
 int			key_press_hook(int keycode, void *ptr)
 {
 	ptr = NULL;
@@ -51,12 +50,12 @@ void            draw_square(int i, int j)
     int y;
 
     x = 0;
-    while (x < 24)
+    while (x < TILE_SIZE)
     {
         y = 0;
-        while(y < 24)
+        while(y < TILE_SIZE)
         {
-            my_mlx_pixel_put(&img, j * 24 + y, i * 24 +  x, 0xFF5733);
+            my_mlx_pixel_put(&img, (j * TILE_SIZE + y) * MINI, (i * TILE_SIZE +  x) * MINI, 0xFF5733);
             y++;
         } 
         x++;
@@ -78,7 +77,6 @@ void            draw_2d()
                 draw_square(i, j);
             j += 1;
         }
-        printf("line : %s| lenght %d %d\n", map[i], j, ft_strlen(map[i]));
         i++;
     }
 }
@@ -86,21 +84,32 @@ void            draw_2d()
 int     hasWallAt(float x, float y)
 {
 
-    int x0 = floor(x / 24);
-    int y0 = floor(y / 24);
-    if (x0 < 0 || x0 > 12 || y0 < 0 || y0 > 50)
+
+    int x0 = floor(x / TILE_SIZE);
+    int y0 = floor(y / TILE_SIZE);
+
+    //printf("||%d ' %d || %d ' %d\n", x0, y0,game_data.big_colon,  game_data.big_line  );
+    //if (y0 >= game_data.big_line - 3)
+        //return (0);
+    if (x0 < 0 || x0  >= game_data.big_colon  || y0 < 0 || y0 >= game_data.big_line)
         return (0);
-    return (map[x0][y0] == '1');
+    else if (map[x0][y0] == '1' ) //|| map[x0][y0] == ' ')
+        return (1);
+    return (0);
 }
 
 
 float normalizeAngle(float angle)
 {
-    float angler = fmod(angle ,(2 * M_PI));
+    float angler;
+
+    angler = fmod(angle ,(2 * M_PI));
     if (angle < 0)
         angler = (2 * M_PI) + angle;
     return angler;
 }
+
+ int colorr  = 0xFFFFFF;
 
 float distanceBetweenPoints(float x1,float y1, float x2, float  y2)
 {
@@ -125,7 +134,7 @@ void dda(float  X0, float  Y0, float  X1, float  Y1)
     float Y = Y0; 
     for (int i = 0; i <= steps; i++) 
     {
-        my_mlx_pixel_put(&img, Y, X, 0xFFFFFF);
+        my_mlx_pixel_put(&img, Y, X, colorr);
         X += Xinc;
         Y += Yinc; 
 
@@ -143,11 +152,12 @@ void    ray_direction(float angle)
     ray.isRayFacingDown = ray.rayAngle > 0 && ray.rayAngle < M_PI;
     ray.isRayFacingUp = !ray.isRayFacingDown;
 
-    ray.isRayFacingRight = ray.rayAngle < 0.5 * M_PI || ray.rayAngle > 1.5 * M_PI;
+    ray.isRayFacingRight = ray.rayAngle < (0.5 * M_PI) || ray.rayAngle > (1.5 * M_PI);
     ray.isRayFacingLeft = !ray.isRayFacingRight;
 }
 
-void    cast_ray(float angle)
+
+void    cast_ray(int col, float angle)
 {
     ray_direction(angle);
     float xintercept, yintercept;
@@ -161,17 +171,17 @@ void    cast_ray(float angle)
     float horzWallHitY = 0;
 
     // Find the y-coordinate of the closest horizontal grid intersenction
-    yintercept = floor(nassim.y / 24) * 24;
-    yintercept += ray.isRayFacingDown ? 24 : 0;
+    yintercept = floor(nassim.y / TILE_SIZE) * TILE_SIZE;
+    yintercept += ray.isRayFacingDown ? TILE_SIZE : 0;
 
     // Find the x-coordinate of the closest horizontal grid intersection
     xintercept = nassim.x + (yintercept - nassim.y) / tan(ray.rayAngle);
 
     // Calculate the increment xstep and ystep
-    ystep = 24;
+    ystep = TILE_SIZE;
     ystep *= ray.isRayFacingUp ? -1 : 1;
 
-    xstep = 24 / tan(ray.rayAngle);
+    xstep = TILE_SIZE / tan(ray.rayAngle);
     xstep *= (ray.isRayFacingLeft && xstep > 0) ? -1 : 1;
     xstep *= (ray.isRayFacingRight && xstep < 0) ? -1 : 1;
 
@@ -179,9 +189,9 @@ void    cast_ray(float angle)
     float nextHorzTouchY = yintercept;
 
     // Increment xstep and ystep until we find a wall
-    while (nextHorzTouchX >= 0 && nextHorzTouchX < game_data.resolution_x && nextHorzTouchY >= 0 && nextHorzTouchY < game_data.resolution_y)
+    while (nextHorzTouchX >= 0 && nextHorzTouchX < game_data.big_colon * TILE_SIZE && nextHorzTouchY >= 0 && nextHorzTouchY < game_data.big_line * TILE_SIZE)
     {
-        if (hasWallAt(nextHorzTouchX, nextHorzTouchY - (ray.isRayFacingUp ? 1 : 0)))
+        if (hasWallAt(nextHorzTouchX, nextHorzTouchY + (ray.isRayFacingUp ? -1 : 0)))
         {
             foundHorzWallHit = true;
             horzWallHitX = nextHorzTouchX;
@@ -203,25 +213,26 @@ void    cast_ray(float angle)
     float vertWallHitY = 0;
 
     // Find the x-coordinate of the closest vertical grid intersenction
-    xintercept = floor(nassim.x / 24) * 24;
-    xintercept += ray.isRayFacingRight ? 24 : 0;
+    xintercept = floor(nassim.x / TILE_SIZE) * TILE_SIZE;
+    xintercept += ray.isRayFacingRight ? TILE_SIZE : 0;
 
     // Find the y-coordinate of the closest vertical grid intersection
     yintercept = nassim.y + (xintercept - nassim.x) * tan(ray.rayAngle);
 
     // Calculate the increment xstep and ystep
-    xstep = 24;
+    xstep = TILE_SIZE;
     xstep *= ray.isRayFacingLeft ? -1 : 1;
 
-    ystep = 24 * tan(ray.rayAngle);
+    ystep = TILE_SIZE * tan(ray.rayAngle);
     ystep *= (ray.isRayFacingUp && ystep > 0) ? -1 : 1;
     ystep *= (ray.isRayFacingDown && ystep < 0) ? -1 : 1;
+    
 
     float nextVertTouchX = xintercept;
     float nextVertTouchY = yintercept;
 
     // Increment xstep and ystep until we find a wall
-    while (nextVertTouchX >= 0 && nextVertTouchX < game_data.resolution_x && nextVertTouchY >= 0 && nextVertTouchY < game_data.resolution_y)
+    while (nextVertTouchX >= 0 && nextVertTouchX < game_data.big_colon * TILE_SIZE && nextVertTouchY >= 0 && nextVertTouchY < game_data.big_line * TILE_SIZE)
     {
         if (hasWallAt(nextVertTouchX  - (ray.isRayFacingLeft ? 1 : 0), nextVertTouchY))
         {
@@ -244,13 +255,49 @@ void    cast_ray(float angle)
     float vertHitDistance = (foundVertWallHit)
         ? distanceBetweenPoints(nassim.x, nassim.y, vertWallHitX, vertWallHitY)
         : INT_MAX;
+    // printf("%.2f %.2f %.2f %.2f %.2f\n", xstep, ystep, horzHitDistance, vertHitDistance, ray.isRayFacingRight);
 
     // only store the smallest of the distances
     ray.wallHitX = (horzHitDistance < vertHitDistance) ? horzWallHitX : vertWallHitX;
     ray.wallHitY = (horzHitDistance < vertHitDistance) ? horzWallHitY : vertWallHitY;
     ray.distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
     ray.wasHitVertical = (vertHitDistance < horzHitDistance);
-    dda(nassim.x , nassim.y, ray.wallHitX, ray.wallHitY);
+    
+    ray.distance *= cos(nassim.dirangle - ray.rayAngle);
+    //printf("0%f\n",ray.rayAngle);
+    //printf("1%f\n",nassim.rotationangle);
+    //ray.distance *= cos(ray.rayAngle);
+    float perpDistance = ray.distance;
+    float distanceProjPlane = (game_data.big_colon * TILE_SIZE / 2) / tan(FOV_ANGLE / 2);
+    float projectedWallHeight = (TILE_SIZE / perpDistance) * distanceProjPlane;
+
+    int wallStripHeight = projectedWallHeight;
+    int wallTopPixel = (game_data.big_line * TILE_SIZE / 2) - (wallStripHeight / 2);
+    wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
+
+    int wallBottomPixel = (game_data.big_line * TILE_SIZE / 2) + (wallStripHeight / 2);
+    wallBottomPixel = wallBottomPixel > game_data.big_line * TILE_SIZE ? game_data.big_line * TILE_SIZE : wallBottomPixel;
+   
+    colorr = 0x26A52B;
+   dda(wallBottomPixel, col, wallTopPixel, col);
+
+   // floor
+    dda(game_data.big_line * TILE_SIZE/2 + wallStripHeight/2 , col, game_data.big_line * TILE_SIZE , col);
+    
+    // sma  
+    colorr = 0x5536BD;
+    dda(game_data.big_line * TILE_SIZE/2 - wallStripHeight/2 , col ,0  ,col);
+
+   ft_empty_trash(angle, col);
+    //dda(nassim.x* MINI , nassim.y*MINI, ray.wallHitX*MINI, ray.wallHitY*MINI);
+    
+   // dda(col , 0, ray.wallHitX, ray.wallHitY);
+    // CEILLINGd
+    //ft_draw_line(col , 0, WINDOW_HEIGHT/2 - wallStripHeight/2);
+    //dda(col , WINDOW_HEIGHT/2 - wallStripHeight/2, 0, WINDOW_HEIGHT/2 + wallStripHeight/2);
+    // FLOOR
+    //ft_draw_line(col , data.Height/2 + wallStripHeight/2, col, data.Height);
+
 }
 
 
@@ -262,12 +309,12 @@ void            cast(void)
     float   angle;
 
     i = 0;
-    rayangle = (FOV_ANGLE / game_data.resolution_x);
+    rayangle = (FOV_ANGLE / (game_data.resolution_x ));
     angle = (nassim.dirangle) - (FOV_ANGLE/2);
     while (i < game_data.resolution_x)
     {
         angle = normalizeAngle(angle);
-        cast_ray(angle);
+        cast_ray(i, angle);
         angle += rayangle;
         i++;
     }
@@ -278,11 +325,13 @@ void move_player()
     nassim.dirangle += nassim.turndirection * nassim.rotationspeed;
     
     nassim.movestep = nassim.walkdirection * nassim.movespeed;
-
+    float x,y ;
+    x = nassim.x + cos(nassim.dirangle) * nassim.movestep * 7;
+    y = nassim.y + sin(nassim.dirangle) * nassim.movestep * 7;
     nassim.newplayerx = nassim.x + cos(nassim.dirangle) * nassim.movestep;
     nassim.newplayery = nassim.y + sin(nassim.dirangle) * nassim.movestep;
 
-    if (!hasWallAt( nassim.newplayerx,  nassim.newplayery))
+    if (!hasWallAt(x, y))
     {
         nassim.x = nassim.newplayerx;
         nassim.y = nassim.newplayery;
@@ -298,13 +347,13 @@ int            ft_update()
     img.img = mlx_new_image(mlx, game_data.resolution_x, game_data.resolution_y);
     img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
     &img.endian);
-    draw_2d();
+    //draw_2d();
     move_player();
+
     cast();
     mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
     return (0);
 }
-
 
 void            get_player_pos()
 {
@@ -319,8 +368,8 @@ void            get_player_pos()
         {
             if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
             {
-                nassim.x = (i + 0.5) * 24;
-                nassim.y = (j + 0.5) * 24;
+                nassim.x = (i + 0.5) * TILE_SIZE;
+                nassim.y = (j + 0.5) * TILE_SIZE;
                 if (map[i][j] == 'N')
                     nassim.dirangle = -(M_PI / 2);
                 else if (map[i][j] == 'S')
@@ -339,7 +388,7 @@ void            get_player_pos()
 
 void    init_struct()
 {
-    nassim.rotationangle = M_PI/ 2;
+    nassim.rotationangle = M_PI/ 12;
     nassim.turndirection = 0;
     nassim.rotationspeed = 2 * M_PI / 180;
     nassim.walkdirection = 0;
@@ -353,12 +402,6 @@ int             main()
     
     char *line;
     char **tab;
-    int x;
-    int y;
-
-
-    y = 50;
-    x = 50;
     int fd;
 
     // fd = open("map.cub",O_RDONLY);
@@ -379,14 +422,21 @@ int             main()
 
     //     }
     // }
+    game_data.big_colon = 0;
+    game_data.big_line = 0;  
     ft_readmap();
+    int i = -1;
     // printf("%s\n",line);
     mlx = mlx_init();
     mlx_win = mlx_new_window(mlx, game_data.resolution_x, game_data.resolution_y, "CUb3d");
     img.img = NULL;
     printf("x = %d y = %d\n", game_data.resolution_x, game_data.resolution_y);
     get_player_pos();
+    map = fill_map();
+    while (++i < game_data.big_colon)
+		printf("%s\n", map[i]);
     init_struct();
+    init_textures();
     mlx_hook(mlx_win, 2, 0, key_press_hook, "lll");
 	mlx_hook(mlx_win, 3, 0, key_release_hook, "lll");
     mlx_loop_hook(mlx, &ft_update, "");

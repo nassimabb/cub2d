@@ -6,11 +6,55 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/31 18:49:14 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/02/11 18:02:03 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/11 17:20:04 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+void free_array(char **tab)
+{
+    int i;
+
+    i = -1;
+    while (tab[++i])
+        free(tab[i]);
+    free(tab);
+}
+
+char **fill_map()
+{
+    char **tab;
+    int i;
+    int j;
+    char *tmp;
+    tab = malloc(sizeof(char*) * (game_data.big_colon + 1));
+    i = 0;
+    while (i < game_data.big_colon)
+    {
+        tab[i] = malloc(sizeof(char) * game_data.big_line + 1);
+        j = 0;
+        while (j < game_data.big_line)
+        {
+            if (j < ft_strlen(map[i]))
+                tab[i][j] = map[i][j];
+            else
+                tab[i][j] = '1';
+
+            j++;
+        }
+        // //tmp = ft_strrchr(tab[i], '0');
+        //     //if (tmp)
+        //     {
+        //             *tmp = '1';
+        //     }
+        tab[i][j] = 0;
+        i++;
+    }
+    tab[i] = NULL;
+    free_array(map);
+    return tab;
+}
+
 void       ft_split2(char* tab)
 {
     char **tab2;
@@ -33,6 +77,24 @@ void       ft_splitc(char* tab)
     color.color_zc = ft_atoi(tab2[2]);
 }
 
+void    ft_countmap(void)
+{
+    int     i;
+    int     j;
+        
+    j = 0;    
+    j = ft_tablen(map);
+    i = 0;
+    game_data.big_line = ft_strlen(map[i]);
+    while (i < j - 1)
+    {
+        if (game_data.big_line < ft_strlen(map[i + 1]))
+            game_data.big_line = ft_strlen(map[i + 1]);
+        i++;
+    }
+    game_data.big_colon = j;
+    printf("$$$$%d$$$$\n$$$$%d$$$$\n",game_data.big_line,game_data.big_colon);
+}
 
 char    **ft_realloc(char **tab, char *element)
 {
@@ -52,6 +114,10 @@ char    **ft_realloc(char **tab, char *element)
     }
     ret[i] = ft_strdup(element);
     ret[i + 1] = NULL;
+    game_data.big_colon += 1;
+    if (game_data.big_line < ft_strlen(element))
+        game_data.big_line = ft_strlen(element);
+        
     return (ret);
 }
 
@@ -62,7 +128,7 @@ void       ft_readmap(void)
     int fd;
 
 
-    map = NULL;                                                                                               
+    map = NULL;                                                                                          
     fd = open("map.cub",O_RDONLY);
     while (get_next_line(fd,&line))
     {
@@ -112,16 +178,13 @@ void       ft_readmap(void)
                 color.flor_b = tab[0];
                 ft_splitc(tab[1]);
             }
-            else if (ft_isdigit(*line) || *line == ' ' || *line == '\t')
+            else if (ft_isdigit(*line) || *line == ' ')
                 map = ft_realloc(map, line);
         }
     }
-    int i;
 
-	i = -1;
-	while (++i < ft_tablen(map))
-		printf("%s\n", map[i]);
-   // printf("%d\n",color.color_xc );
+   printf("%d\n",color.color_xc );
    // printf("%d\n",color.color_yc );
    // printf("%d\n",color.color_zc);
+   //
 }

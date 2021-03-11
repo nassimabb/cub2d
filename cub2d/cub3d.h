@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/02/14 18:35:49 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/11 19:01:03 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,16 @@
 #include <stdbool.h>
 # include <limits.h>
 # define EXIT_KEY		53
-# define KEY_LEFT		124
-# define KEY_RIGHT		123
+# define KEY_RIGHT		124
+# define KEY_LEFT		123
 # define KEY_DOWN		125
 # define KEY_UP			126
-# define TILE_SIZE 32
+# define TILE_SIZE      32
 # define PI 3.14
 # define FOV_ANGLE (60 * (PI / 180))
-# define MAP_NUM_ROWS 14
-# define MAP_NUM_COLS 30
-# define WINDOW_WIDTH ( MAP_NUM_COLS * TILE_SIZE )
-# define WINDOW_HEIGHT ( MAP_NUM_ROWS * TILE_SIZE )
+
+
+#define MINI 0.3
 
 
 typedef struct player
@@ -44,6 +43,17 @@ typedef struct player
 }               t_player;
 
 t_player player;
+
+typedef struct			s_image
+{
+	int					width;
+	int					height;
+	int					bits_per_pixel;
+	int					size_line;
+	int					endian;
+	void				*ptr;
+	int					*data;
+}						t_image;
 
 typedef struct s_ray
 {
@@ -89,7 +99,9 @@ typedef struct  s_cub {
     char*       ea_path;
     char*       ea_txt;
     char*       s_path;
-    char*       s_txt;   
+    char*       s_txt;  
+     int     big_line;
+int     big_colon;
 }               t_cub;
 
 typedef struct  s_color {
@@ -101,6 +113,9 @@ typedef struct  s_color {
     int         color_xc;
     int         color_yc;
     int         color_zc;
+    int         r;
+    int         g;
+    int         b;
 }               t_color;
 
 typedef struct  s_data {
@@ -110,12 +125,27 @@ typedef struct  s_data {
     int         line_length;
     int         endian;
 }               t_data;
-
+t_image					g_north;
+t_image					g_west;
+t_image					g_south;
+t_image					g_east;
+t_image					g_sprite;
 char       **map;
+char        **updated_map;
 t_data  img;
+float					g_ray_distance[2561];
 t_cub   game_data;
 t_color color;
 void    *mlx;
 void    *mlx_win;
 void    ft_readmap(void);
+char **fill_map();
+void free_array(char **tab);
+void        ft_draw_texture(t_image ptr, int col, float offset, float wallstripheight);
+void		ft_empty_trash(float rayangle, int col);
+void		get_text_data(void);
+void		init_textures(void);
+unsigned int		shadow(unsigned int color, int col);
+unsigned int	rgb_to_int(unsigned int r, unsigned int g, unsigned int b);
+void            my_mlx_pixel_put(t_data *data, int x, int y, int color);
 #endif
