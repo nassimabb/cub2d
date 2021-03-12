@@ -3,10 +3,7 @@
 
 void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
-    int		*dst;
 
-	dst = (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-			&img.endian);
 	if (x < game_data.resolution_x && y < game_data.resolution_y && x >= 0 && y >= 0)
 		dst[y * (int)game_data.resolution_x + x] = color;
 }
@@ -268,25 +265,24 @@ void    cast_ray(int col, float angle)
     //printf("1%f\n",nassim.rotationangle);
     //ray.distance *= cos(ray.rayAngle);
     float perpDistance = ray.distance;
-    float distanceProjPlane = (game_data.big_colon * TILE_SIZE / 2) / tan(FOV_ANGLE / 2);
+    float distanceProjPlane = (game_data.resolution_y / 2) / tan(FOV_ANGLE / 2);
     float projectedWallHeight = (TILE_SIZE / perpDistance) * distanceProjPlane;
 
     int wallStripHeight = projectedWallHeight;
-    int wallTopPixel = (game_data.big_line * TILE_SIZE / 2) - (wallStripHeight / 2);
+    int wallTopPixel = (game_data.resolution_y / 2) - (wallStripHeight / 2);
     wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
 
-    int wallBottomPixel = (game_data.big_line * TILE_SIZE / 2) + (wallStripHeight / 2);
-    wallBottomPixel = wallBottomPixel > game_data.big_line * TILE_SIZE ? game_data.big_line * TILE_SIZE : wallBottomPixel;
+    int wallBottomPixel = (game_data.resolution_y / 2) + (wallStripHeight / 2);
+    wallBottomPixel = wallBottomPixel > game_data.resolution_y ? game_data.resolution_y : wallBottomPixel;
    
     colorr = 0x26A52B;
-   dda(wallBottomPixel, col, wallTopPixel, col);
 
    // floor
-    dda(game_data.big_line * TILE_SIZE/2 + wallStripHeight/2 , col, game_data.big_line * TILE_SIZE , col);
+    dda(game_data.resolution_y/2 + wallStripHeight/2, col,game_data.resolution_y, col);
     
     // sma  
     colorr = 0x5536BD;
-    dda(game_data.big_line * TILE_SIZE/2 - wallStripHeight/2 , col ,0  ,col);
+    dda( 0, col ,game_data.resolution_y/2 - wallStripHeight/2  ,col);
 
    ft_empty_trash(angle, col);
     //dda(nassim.x* MINI , nassim.y*MINI, ray.wallHitX*MINI, ray.wallHitY*MINI);
@@ -347,6 +343,9 @@ int            ft_update()
     img.img = mlx_new_image(mlx, game_data.resolution_x, game_data.resolution_y);
     img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
     &img.endian);
+
+	dst = (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
+			&img.endian);
     //draw_2d();
     move_player();
 
@@ -388,11 +387,11 @@ void            get_player_pos()
 
 void    init_struct()
 {
-    nassim.rotationangle = M_PI/ 12;
+    nassim.rotationangle = M_PI;
     nassim.turndirection = 0;
     nassim.rotationspeed = 2 * M_PI / 180;
     nassim.walkdirection = 0;
-    nassim.movespeed = 2.0;
+    nassim.movespeed = 4.0;
 
 }
 

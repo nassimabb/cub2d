@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:08 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/11 17:16:29 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:18:51 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ void        ft_draw_texture(t_image ptr, int col, float offset, float wallstriph
     int offset_x;
     int offset_y;
     int dist_from_top;
-    start = (game_data.resolution_x / 2) - (wallstripheight / 2);
-    end = (game_data.resolution_x / 2) + (wallstripheight / 2) ;
+    start = (game_data.resolution_y / 2) - (wallstripheight / 2);
+    end = (game_data.resolution_y / 2) + (wallstripheight / 2) ;
     texture_y = 0;
     offset_x = (ray.wasHitVertical) ? (int)ray.wallHitY % TILE_SIZE : (int)ray.wallHitX % TILE_SIZE;
     while (start < end)
     {
-        dist_from_top = start + (wallstripheight/ 2) - (game_data.resolution_x / 2);
+        dist_from_top = start + (wallstripheight/ 2) - (game_data.resolution_y / 2);
         offset_y = (int)(dist_from_top * (float)TILE_SIZE / wallstripheight);
         color = ptr.data[offset_y * TILE_SIZE + offset_x];
         my_mlx_pixel_put(&img, col, start, color);

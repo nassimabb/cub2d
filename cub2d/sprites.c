@@ -8,7 +8,7 @@ void			render_spt(int x, int y, int sp_size, int k)
 	color = 0;
 	while (i++ < sp_size)
 	{
-		if (x + i < 0 || x + i > g_data.width)
+		if (x + i < 0 || x + i > game_data.resolution_x)
 			continue;
 		if (g_s_data[k].distance >= g_ray_distance[x + i])
 			continue;
@@ -33,23 +33,25 @@ void			ft_sprite(int i)
 	float		y_inter;
 	float		sp_angle;
 
+	// 
 	sp_angle = atan2(g_s_data[i].y - g_player.y, g_s_data[i].x - g_player.x);
 	while (sp_angle - g_player.dirangle > M_PI)
 		sp_angle -= 2 * M_PI;
 	while (sp_angle - g_player.dirangle < -M_PI)
 		sp_angle += 2 * M_PI;
-	if (g_data.height > g_data.width)
-		sp_size = (g_data.height / g_s_data[i].distance) * TILE_SIZE;
+	if (game_data.resolution_y > game_data.resolution_x)
+		sp_size = (game_data.resolution_y / g_s_data[i].distance) * TILE_SIZE;
 	else
-		sp_size = (g_data.width / g_s_data[i].distance) * TILE_SIZE;
-	y_inter = g_data.height / 2 - sp_size / 2 + 50 * g_look;
+		sp_size = (game_data.resolution_x / g_s_data[i].distance) * TILE_SIZE;
+	y_inter = game_data.resolution_y / 2 - sp_size / 2;
 	x_inter = (sp_angle - g_player.dirangle) /
-	g_player.fov * g_data.width + (g_data.width / 2 - sp_size / 2);
+	g_player.fov * game_data.resolution_x + (game_data.resolution_x / 2 - sp_size / 2);
 	render_spt(x_inter, y_inter, sp_size, i);
 }
 
 void			ft_sort_sprites(void)
 {
+	// sort sprites 	
 	int			i;
 	int			j;
 	t_sprites	temp;
@@ -81,6 +83,7 @@ void			init_sprites_pos(void)
 	i = 0;
 	j = 0;
 	k = 0;
+	// loop ela number dyal sprites
 	while (g_data.map[i] != '\0' && k < g_data.nb_of_sprites)
 	{
 		j = 0;
@@ -88,6 +91,7 @@ void			init_sprites_pos(void)
 		{
 			if (g_data.map[i][j] == '2')
 			{
+				// itialise sprite position
 				g_s_data[k].x = (j + 0.5) * TILE_SIZE;
 				g_s_data[k].y = (i + 0.5) * TILE_SIZE;
 				k++;
@@ -98,23 +102,29 @@ void			init_sprites_pos(void)
 	}
 }
 
+// cALL IN UPDATE  ()
 void			ft_draw_sprites(void)
 {
 	int			i;
 
 	i = 0;
+	// loop ela nbr dyal sprites
 	while (i < g_data.nb_of_sprites)
 	{
+		// kan 7ssb distance (payerx, player y, spritex, sprite y)
 		g_s_data[i].distance = ft_distancebetweenpoints(g_player.x, g_player.y,
 		g_s_data[i].x, g_s_data[i].y);
 		i++;
 	}
 	ft_sort_sprites();
 	i = 0;
+	// draw each sprite 
 	while (i < g_data.nb_of_sprites)
 		ft_sprite(i++);
 }
 
+
+// main mra w7da 
 void			init_sprites(void)
 {
 	int			i;
@@ -124,9 +134,11 @@ void			init_sprites(void)
 	i = 0;
 	j = 0;
 	k = 0;
+	// map[][] 
 	while (g_data.map[i] != '\0')
 	{
 		j = 0;
+		// count number of sprites
 		while (g_data.map[i][j] != '\0')
 		{
 			if (g_data.map[i][j] == '2')
@@ -135,5 +147,6 @@ void			init_sprites(void)
 		}
 		i++;
 	}
+	// distance beween player and sprite
 	init_sprites_pos();
 }

@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/11 19:01:03 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:41:56 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 # define KEY_LEFT		123
 # define KEY_DOWN		125
 # define KEY_UP			126
-# define TILE_SIZE      32
+# define TILE_SIZE      64
 # define PI 3.14
 # define FOV_ANGLE (60 * (PI / 180))
 
 
 #define MINI 0.3
 
-
+int		*dst;
 typedef struct player
 {
     int x;

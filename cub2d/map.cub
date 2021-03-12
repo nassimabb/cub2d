@@ -1,10 +1,10 @@
-R 1000 1000
+R 1500 1500
 
-NO ./textures/wood.xpm
-SO ./textures/wood.xpm
-WE ./textures/wood.xpm
-EA ./textures/wood.xpm
-S ./textures/wood.xpm
+NO ./textures/eagle.xpm
+SO ./textures/eagle.xpm
+WE ./textures/eagle.xpm
+EA ./textures/eagle.xpm
+S ./textures/eagle.xpm
 
 F 220,100,0
 C 225,30,0
