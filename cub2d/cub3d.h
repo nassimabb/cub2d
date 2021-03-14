@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/12 18:41:56 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/14 17:36:58 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,21 +124,49 @@ typedef struct  s_data {
     int         bits_per_pixel;
     int         line_length;
     int         endian;
+    int					nb_of_sprites;
 }               t_data;
+typedef struct			s_sprites
+{
+	float				x;
+	float				y;
+	float				distance;
+}						t_sprites;
+
+typedef struct			s_datas
+{
+	int					width;
+	int					height;
+	t_color				floor;
+	t_color				c;
+	char				*map[50];
+	int					cols;
+	int					index;
+	int					nb_of_rows;
+	int					nb_of_cols;
+	int					nb_of_sprites;
+}						t_datas;
+
+t_datas					g_data;
+t_sprites				g_s_data[50];
 t_image					g_north;
 t_image					g_west;
 t_image					g_south;
 t_image					g_east;
 t_image					g_sprite;
+t_image					g_image;
 char       **map;
 char        **updated_map;
 t_data  img;
 float					g_ray_distance[2561];
+float distanceBetweenPoints(float x1,float y1, float x2, float  y2);
 t_cub   game_data;
 t_color color;
 void    *mlx;
 void    *mlx_win;
 void    ft_readmap(void);
+void    ft_draw_sprites(void);
+void			init_sprites(void);
 char **fill_map();
 void free_array(char **tab);
 void        ft_draw_texture(t_image ptr, int col, float offset, float wallstripheight);

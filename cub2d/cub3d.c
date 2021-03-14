@@ -1,6 +1,5 @@
 #include "cub3d.h"
 
-
 void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 
@@ -261,6 +260,7 @@ void    cast_ray(int col, float angle)
     ray.wasHitVertical = (vertHitDistance < horzHitDistance);
     
     ray.distance *= cos(nassim.dirangle - ray.rayAngle);
+    g_ray_distance[col] = ray.distance;
     //printf("0%f\n",ray.rayAngle);
     //printf("1%f\n",nassim.rotationangle);
     //ray.distance *= cos(ray.rayAngle);
@@ -350,6 +350,7 @@ int            ft_update()
     move_player();
 
     cast();
+    ft_draw_sprites();
     mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
     return (0);
 }
@@ -436,8 +437,10 @@ int             main()
 		printf("%s\n", map[i]);
     init_struct();
     init_textures();
+        init_sprites();
     mlx_hook(mlx_win, 2, 0, key_press_hook, "lll");
 	mlx_hook(mlx_win, 3, 0, key_release_hook, "lll");
+
     mlx_loop_hook(mlx, &ft_update, "");
   
     mlx_loop(mlx);
