@@ -94,6 +94,22 @@ int     hasWallAt(float x, float y)
     return (0);
 }
 
+int     hasspriteAt(float x, float y)
+{
+
+
+    int x0 = floor(x / TILE_SIZE);
+    int y0 = floor(y / TILE_SIZE);
+
+    //printf("||%d ' %d || %d ' %d\n", x0, y0,game_data.big_colon,  game_data.big_line  );
+    //if (y0 >= game_data.big_line - 3)
+        //return (0);
+    if (x0 < 0 || x0  >= game_data.big_colon  || y0 < 0 || y0 >= game_data.big_line)
+        return (0);
+    else if (map[x0][y0] == '2' ) //|| map[x0][y0] == ' ')
+        return (1);
+    return (0);
+}
 
 float normalizeAngle(float angle)
 {
@@ -258,9 +274,9 @@ void    cast_ray(int col, float angle)
     ray.wallHitY = (horzHitDistance < vertHitDistance) ? horzWallHitY : vertWallHitY;
     ray.distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
     ray.wasHitVertical = (vertHitDistance < horzHitDistance);
-    
+   
     ray.distance *= cos(nassim.dirangle - ray.rayAngle);
-    g_ray_distance[col] = ray.distance;
+    g_ray_distance[col] = ray.distance; 
     //printf("0%f\n",ray.rayAngle);
     //printf("1%f\n",nassim.rotationangle);
     //ray.distance *= cos(ray.rayAngle);
@@ -275,13 +291,13 @@ void    cast_ray(int col, float angle)
     int wallBottomPixel = (game_data.resolution_y / 2) + (wallStripHeight / 2);
     wallBottomPixel = wallBottomPixel > game_data.resolution_y ? game_data.resolution_y : wallBottomPixel;
    
-    colorr = 0x26A52B;
+    colorr = rgb_to_int(color.color_x,color.color_y,color.color_z);
 
    // floor
     dda(game_data.resolution_y/2 + wallStripHeight/2, col,game_data.resolution_y, col);
     
     // sma  
-    colorr = 0x5536BD;
+   colorr = rgb_to_int(color.color_xc,color.color_yc,color.color_zc);
     dda( 0, col ,game_data.resolution_y/2 - wallStripHeight/2  ,col);
 
    ft_empty_trash(angle, col);
@@ -322,12 +338,12 @@ void move_player()
     
     nassim.movestep = nassim.walkdirection * nassim.movespeed;
     float x,y ;
-    x = nassim.x + cos(nassim.dirangle) * nassim.movestep * 7;
-    y = nassim.y + sin(nassim.dirangle) * nassim.movestep * 7;
+    x = nassim.x + cos(nassim.dirangle) * nassim.movestep * 4;
+    y = nassim.y + sin(nassim.dirangle) * nassim.movestep * 4;
     nassim.newplayerx = nassim.x + cos(nassim.dirangle) * nassim.movestep;
     nassim.newplayery = nassim.y + sin(nassim.dirangle) * nassim.movestep;
 
-    if (!hasWallAt(x, y))
+    if (!hasWallAt(x, y) && !hasspriteAt(x, y))
     {
         nassim.x = nassim.newplayerx;
         nassim.y = nassim.newplayery;
@@ -341,8 +357,6 @@ int            ft_update()
         mlx_destroy_image(mlx, img.img);
 
     img.img = mlx_new_image(mlx, game_data.resolution_x, game_data.resolution_y);
-    img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-    &img.endian);
 
 	dst = (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 			&img.endian);
@@ -370,13 +384,13 @@ void            get_player_pos()
             {
                 nassim.x = (i + 0.5) * TILE_SIZE;
                 nassim.y = (j + 0.5) * TILE_SIZE;
+                if (map[i][j] == 'E')
+                    nassim.dirangle =   M_PI / 2;
+                if (map[i][j] == 'W')
+                    nassim.dirangle  = 3 * M_PI / 2;
                 if (map[i][j] == 'N')
-                    nassim.dirangle = -(M_PI / 2);
-                else if (map[i][j] == 'S')
-                    nassim.dirangle  = M_PI / 2;
-                else if (map[i][j] == 'W')
                     nassim.dirangle = M_PI;
-                else if (map[i][j] == 'E')
+                if (map[i][j] == 'S')
                     nassim.dirangle  = 0;
             }
             j += 1;
@@ -390,54 +404,26 @@ void    init_struct()
 {
     nassim.rotationangle = M_PI;
     nassim.turndirection = 0;
-    nassim.rotationspeed = 2 * M_PI / 180;
+    nassim.rotationspeed = 5 * M_PI / 180;
     nassim.walkdirection = 0;
-    nassim.movespeed = 4.0;
+    nassim.movespeed = 5.0;
 
 }
 
 int             main()
 {
-
-    
-    char *line;
-    char **tab;
-    int fd;
-
-    // fd = open("map.cub",O_RDONLY);
-    // while (get_next_line(fd,&line) )
-    // {
-    //     tab = ft_split(line ,' ');
-    //     if(ft_tablen(tab))
-    //     {
-    //         if (!ft_strncmp(tab[0],"R",ft_strlen(tab[0])))
-    //         {
-    //             game_data.resolution_x = ft_atoi(tab[1]);
-    //             game_data.resolution_y = ft_atoi(tab[2]);
-    //         }
-    //         if (!ft_strncmp(tab[0],"NO",ft_strlen(tab[0])))
-    //         {
-    //             game_data.no_path = tab [0];
-    //         }
-
-    //     }
-    // }
+    char **tmp;
     game_data.big_colon = 0;
     game_data.big_line = 0;  
     ft_readmap();
-    int i = -1;
-    // printf("%s\n",line);
     mlx = mlx_init();
     mlx_win = mlx_new_window(mlx, game_data.resolution_x, game_data.resolution_y, "CUb3d");
     img.img = NULL;
-    printf("x = %d y = %d\n", game_data.resolution_x, game_data.resolution_y);
-    get_player_pos();
     map = fill_map();
-    while (++i < game_data.big_colon)
-		printf("%s\n", map[i]);
+    get_player_pos();
     init_struct();
     init_textures();
-        init_sprites();
+    init_sprites();
     mlx_hook(mlx_win, 2, 0, key_press_hook, "lll");
 	mlx_hook(mlx_win, 3, 0, key_release_hook, "lll");
 

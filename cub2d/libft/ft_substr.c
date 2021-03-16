@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nabboudi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/30 03:08:42 by nabboudi          #+#    #+#             */
-/*   Updated: 2019/10/30 03:08:43 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:17:10 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		start++;
 	}
 	p[i] = '\0';
+	free(s);
 	return (char *)(p);
 }

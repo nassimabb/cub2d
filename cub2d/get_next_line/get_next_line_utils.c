@@ -6,34 +6,12 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 18:13:45 by nabboudi          #+#    #+#             */
-/*   Updated: 2019/11/15 06:08:39 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:37:38 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char			*p;
-	unsigned int	i;
-
-	i = 0;
-	if (!s)
-		return (NULL);
-	if (ft_strlen(s) < start)
-		len = 0;
-	p = malloc(len + 1);
-	if (p == NULL)
-		return (0);
-	while (len--)
-	{
-		p[i] = s[start];
-		i++;
-		start++;
-	}
-	p[i] = '\0';
-	return (char *)(p);
-}
 
 char	*ft_strcpy(char *dest, char *src)
 {
@@ -94,7 +72,10 @@ size_t	ft_strlen(const char *s)
 	size_t len;
 
 	len = 0;
-	while (s[len] != '\0')
-		len++;
+	if (s)
+	{
+		while (s[len] != '\0')
+			len++;
+	}
 	return (len);
 }

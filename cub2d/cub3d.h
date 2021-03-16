@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/14 17:36:58 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/16 18:36:06 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_plr nassim;
 t_ray   ray;
 
 typedef struct  s_cub {
-    int           resolution_x;
+    int         resolution_x;
     int         resolution_y;
     char*       no_path;
     char*       no_txt;
@@ -100,8 +100,9 @@ typedef struct  s_cub {
     char*       ea_txt;
     char*       s_path;
     char*       s_txt;  
-     int     big_line;
-int     big_colon;
+    int         big_line;
+    int         big_colon;
+    int			nb_of_sprites;
 }               t_cub;
 
 typedef struct  s_color {
@@ -124,8 +125,8 @@ typedef struct  s_data {
     int         bits_per_pixel;
     int         line_length;
     int         endian;
-    int					nb_of_sprites;
 }               t_data;
+
 typedef struct			s_sprites
 {
 	float				x;
@@ -133,21 +134,7 @@ typedef struct			s_sprites
 	float				distance;
 }						t_sprites;
 
-typedef struct			s_datas
-{
-	int					width;
-	int					height;
-	t_color				floor;
-	t_color				c;
-	char				*map[50];
-	int					cols;
-	int					index;
-	int					nb_of_rows;
-	int					nb_of_cols;
-	int					nb_of_sprites;
-}						t_datas;
 
-t_datas					g_data;
 t_sprites				g_s_data[50];
 t_image					g_north;
 t_image					g_west;
@@ -160,6 +147,8 @@ char        **updated_map;
 t_data  img;
 float					g_ray_distance[2561];
 float distanceBetweenPoints(float x1,float y1, float x2, float  y2);
+float	distance(float x1, float y1, float x2, float y2);
+int     hasspriteAt(float x, float y);
 t_cub   game_data;
 t_color color;
 void    *mlx;
@@ -176,4 +165,13 @@ void		init_textures(void);
 unsigned int		shadow(unsigned int color, int col);
 unsigned int	rgb_to_int(unsigned int r, unsigned int g, unsigned int b);
 void            my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void    split_tab(char *line);
+void    ressolution(int* x , int* y, char **tab);
+void save_path(char **path, char **text, char **tab);
+void save_color(char *line, char **tab, char **color_floor);
+char    **ft_realloc(char **tab, char *element);
+void       ft_split2(char* tab);
+char			**ft_split(const char *str, char c);
+void       ft_splitc(char* tab);
+void	free_tab(char **tab);
 #endif

@@ -6,21 +6,21 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/13 15:09:44 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/14 17:46:19 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:02:03 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+#include "cub3d.h"
+
 float			ft_distancebetweenpoints(float x1, float y1, float x2, float y2)
 {
-	return (sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)));
+	return sqrtf((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
-
-void		ft_pixel_put(int x, int y, unsigned int color)
+float	distance(float x1, float y1, float x2, float y2)
 {
-	if ((x >= 0 && x < g_data.width) && (y >= 0 && y < g_data.height))
-		g_image.data[((int)x + ((int)y) * g_data.width)] = color;
+	return (hypotf((x2 - x1), (y2 - y1)));
 }
 
 void			render_spt(int x, int y, int sp_size, int k)
@@ -35,8 +35,6 @@ void			render_spt(int x, int y, int sp_size, int k)
 	{
 		if (x + i < 0 || x + i > game_data.resolution_x)
 			continue;
-		//
-		printf("%f\n", g_s_data[k].distance);
 		if (g_s_data[k].distance >= g_ray_distance[x + i])
 			continue;
 		j = 0;
@@ -69,9 +67,9 @@ void			 ft_sprite(int i)
 	while (sp_angle - nassim.dirangle < -M_PI)
 		sp_angle += 2 * M_PI;
 	if (game_data.resolution_y > game_data.resolution_x)
-		sp_size = (game_data.resolution_y / g_s_data[i].distance) * TILE_SIZE;
+		sp_size = (game_data.resolution_y /g_s_data[i].distance) * TILE_SIZE;
 	else
-		sp_size = (game_data.resolution_x / g_s_data[i].distance) * TILE_SIZE;
+		sp_size = (game_data.resolution_x /g_s_data[i].distance) * TILE_SIZE;
 	y_inter = game_data.resolution_y / 2 - sp_size / 2;
 	x_inter = (sp_angle - nassim.dirangle) /
 	FOV_ANGLE * game_data.resolution_x + (game_data.resolution_x / 2 - sp_size / 2);
@@ -86,10 +84,10 @@ void			ft_sort_sprites(void)
 	t_sprites	temp;
 
 	i = 0;
-	while (i < g_data.nb_of_sprites)
+	while (i < game_data.nb_of_sprites)
 	{
 		j = 0;
-		while (j < g_data.nb_of_sprites - 1)
+		while (j < game_data.nb_of_sprites - 1)
 		{
 			if (g_s_data[j].distance < g_s_data[j + 1].distance)
 			{
@@ -113,16 +111,16 @@ void			init_sprites_pos(void)
 	j = 0;
 	k = 0;
 	// loop ela number dyal sprites
-	while (map[i] != '\0' && k < g_data.nb_of_sprites)
+	while (map[i] != '\0' && k < game_data.nb_of_sprites)
 	{
 		j = 0;
-		while (map[i][j] != '\0' && k < g_data.nb_of_sprites)
+		while (map[i][j] != '\0' && k < game_data.nb_of_sprites)
 		{
 			if (map[i][j] == '2')
 			{
 				// itialise sprite position
-				g_s_data[k].x = (j + 0.5) * TILE_SIZE;
-				g_s_data[k].y = (i + 0.5) * TILE_SIZE;
+				g_s_data[k].x = (i + 0.5) * TILE_SIZE;
+				g_s_data[k].y = (j + 0.5) * TILE_SIZE;
 				k++;
 			}
 			j++;
@@ -138,21 +136,19 @@ void			ft_draw_sprites(void)
 
 	i = 0;
 	// loop ela nbr dyal sprites
-	while (i < g_data.nb_of_sprites)
+	while (i < game_data.nb_of_sprites)
 	{
 		// kan 7ssb distance (payerx, player y, spritex, sprite y)
-		g_s_data[i].distance = ft_distancebetweenpoints(g_s_data[i].x, g_s_data[i].y, nassim.x, nassim.y);
+		g_s_data[i].distance = distance(nassim.x, nassim.y ,g_s_data[i].x, g_s_data[i].y);
 		i++;
 	}
 	ft_sort_sprites();
 	i = 0;
 	// draw each sprite 
-	while (i < g_data.nb_of_sprites)
+	while (i <game_data.nb_of_sprites)
 		ft_sprite(i++);
 }
-
-
-// main mra w7da 
+ 
 void			init_sprites(void)
 {
 	int			i;
@@ -170,7 +166,7 @@ void			init_sprites(void)
 		while (map[i][j] != '\0')
 		{
 			if (map[i][j] == '2')
-				g_data.nb_of_sprites += 1;
+				game_data.nb_of_sprites += 1;
 			j++;
 		}
 		i++;

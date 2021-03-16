@@ -3,99 +3,90 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nabboudi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 23:00:55 by nabboudi          #+#    #+#             */
-/*   Updated: 2019/10/27 17:36:27 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:12:58 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		words_number(const char *str, char c)
-{
-	int i;
-	int space_flag;
-	int words_number;
 
-	words_number = 0;
-	space_flag = 1;
+static size_t		ft_countw(char *s, char c)
+{
+	size_t i;
+	size_t flag;
+	size_t cpt;
+
+	flag = 1;
 	i = 0;
-	while (str[i])
+	cpt = 0;
+	while (s[i] != '\0')
 	{
-		if (str[i] == c)
-			space_flag = 1;
-		else
+		if (s[i] == c)
+			flag = 1;
+		else if (flag == 1)
 		{
-			words_number += space_flag;
-			space_flag = 0;
+			flag = 0;
+			cpt++;
 		}
 		i++;
 	}
-	return (words_number);
+	return (cpt);
 }
 
-static void		copy(const char *str, char *tab, int len, int i)
+static size_t		ft_wlen(char *s, char c)
 {
-	int k;
+	size_t	i;
+	size_t	len;
 
-	k = -1;
-	while (++k < len)
-		tab[k] = str[i + k];
-	tab[k] = '\0';
-}
-
-static char		**freeespace(char **tab, int j)
-{
-	while (j >= 0)
+	i = 0;
+	len = 0;
+	while (s[i] != c && s[i] != '\0')
 	{
-		free(tab[j]);
-		j--;
+		i++;
+		len++;
 	}
-	free(tab);
+	return (len);
+}
+
+static char			**ft_free(char **f, size_t j)
+{
+	size_t i;
+
+	i = 0;
+	while (i < j)
+		free(f[i++]);
+	free(f);
 	return (NULL);
 }
 
-static char		**add_words(const char *str, char **tab, char c)
+char				**ft_split(char const *s, char c)
 {
-	int i;
-	int j;
-	int len;
+	size_t	i;
+	size_t	countw;
+	char	**p;
+	size_t	j;
+	size_t	l_count;
 
 	i = 0;
 	j = 0;
-	while (str[i])
-	{
-		len = 0;
-		while (str[i] == c)
-			i++;
-		if (str[i])
-		{
-			while (str[i + len] && (str[i + len]) != c)
-				len++;
-			if ((tab[j] = malloc(sizeof(*tab[j]) * (len + 1))) == NULL)
-				return (freeespace(tab, j));
-			copy(str, tab[j++], len, i);
-			i += len;
-		}
-	}
-	tab[j] = NULL;
-	return (tab);
-}
-
-char			**ft_split(const char *str, char c)
-{
-	char	**tab;
-	int		wnb;
-
-	if (!str)
+	l_count = 0;
+	countw = ft_countw((char *)s, c);
+	if (!(p = (char **)malloc(sizeof(char *) * (countw + 1))))
 		return (NULL);
-	wnb = words_number(str, c);
-	tab = malloc(sizeof(*tab) * (wnb + 1));
-	if (tab == NULL)
+	while (i < countw)
 	{
-		free(tab);
-		return (NULL);
+		while (s[j] == c)
+			j++;
+		l_count = ft_wlen((char *)s + j, c);
+		p[i] = ft_substr(s, j, l_count);
+		if (!p)
+			return (ft_free(p, i));
+		i++;
+		j += l_count + 1;
 	}
-	return (add_words(str, tab, c));
+	p[countw] = NULL;
+	return (p);
 }
