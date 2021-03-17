@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 18:32:56 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/16 19:39:26 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/17 12:01:00 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,13 @@ void	free_tab(char **tab)
 	int i;
 	int len;
 
-	i = 0;
-	len = ft_tablen(tab);
-	if (len == 0)
-		return ;
-	while (i < len)
+	i = -1;
+	if (tab)
 	{
-		if (tab[i])
+		while (tab[++i])
 			free(tab[i]);
-		i++;
+		free(tab);
 	}
-	//free(tab);
 }
 
 
@@ -54,25 +50,23 @@ void    split_tab(char *line)
 			save_color(line, tab, &color.flor_b);
 		else if (ft_isdigit(*line) || *line == ' ')
 			map = ft_realloc(map, line);
-		free(tab);
-		return ;
 	}
 	free_tab(tab);
-	free(tab);
+	
 }
 
 void    ressolution(int* x , int* y, char **tab)
 {
 	*x = ft_atoi(tab[1]);
 	*y = ft_atoi(tab[2]);
-	free_tab(tab);
+	//free_tab(tab);
 }
 
 void save_path(char **path, char **text, char **tab)
 {
 	*path = ft_strdup(tab[0]);
     *text = ft_strdup(tab[1]);
-	free_tab(tab);
+	//free_tab(tab);
 }
 
 void save_color(char *line, char **tab, char **color_floor)
@@ -81,5 +75,5 @@ void save_color(char *line, char **tab, char **color_floor)
     	ft_split2(tab[1]);
 	else if (!ft_strncmp(tab[0],"C",1))
 		ft_splitc(tab[1]);
-	free_tab(tab);
+	//free_tab(tab);
 }

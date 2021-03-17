@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/16 18:36:06 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/17 12:25:59 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ void    *mlx_win;
 void    ft_readmap(void);
 void    ft_draw_sprites(void);
 void			init_sprites(void);
+void			ft_handle_bmp(void);
 char **fill_map();
 void free_array(char **tab);
 void        ft_draw_texture(t_image ptr, int col, float offset, float wallstripheight);

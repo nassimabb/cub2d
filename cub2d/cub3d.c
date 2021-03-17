@@ -365,6 +365,8 @@ int            ft_update()
 
     cast();
     ft_draw_sprites();
+    //ft_handle_bmp();
+    exit(0);
     mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
     return (0);
 }
@@ -410,7 +412,7 @@ void    init_struct()
 
 }
 
-int             main()
+int             main(int ac , char **av)
 {
     char **tmp;
     game_data.big_colon = 0;

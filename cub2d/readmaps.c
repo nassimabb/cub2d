@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/31 18:49:14 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/16 19:29:53 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/17 11:54:56 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ void       ft_split2(char* tab)
     color.color_y = ft_atoi(tab2[1]);
     color.color_z = ft_atoi(tab2[2]);
     free_tab(tab2);
-    free(tab2);
 }
 
 void       ft_splitc(char* tab)
@@ -73,7 +72,6 @@ void       ft_splitc(char* tab)
     color.color_yc = ft_atoi(tab2[1]);
     color.color_zc = ft_atoi(tab2[2]);
     free_tab(tab2);
-    free(tab2);
 }
 
 void    ft_countmap(void)
@@ -111,7 +109,6 @@ char    **ft_realloc(char **tab, char *element)
         i++;
     }
     free_tab(tab);
-    free(tab);
     ret[i] = ft_strdup(element);
     ret[i + 1] = NULL;
     game_data.big_colon += 1;
