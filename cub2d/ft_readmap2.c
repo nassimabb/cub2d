@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 18:32:56 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/17 12:01:00 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/19 18:03:34 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,26 @@ void    split_tab(char *line)
 
 void    ressolution(int* x , int* y, char **tab)
 {
+
+	if (ft_tablen(tab) != 3)
+		exit_game(cub, 23);
+	int i;
+	int len = ft_strlen(tab[1]);
+	i = -1;
+	while (++i < len)
+		if (!ft_isdigit(tab[1][i]))
+			exit_game(cub, 23);
+	i = -1;
+	len = ft_strlen(tab[2]);
+	while (++i < len)
+		if (!ft_isdigit(tab[2][i]))
+			exit_game(cub, 23);
 	*x = ft_atoi(tab[1]);
 	*y = ft_atoi(tab[2]);
+		if (*x > 2561 )
+			*x = 2560;
+		if (*y > 1440)
+			*y = 1440;
 	//free_tab(tab);
 }
 

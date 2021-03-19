@@ -20,6 +20,14 @@ int			key_press_hook(int keycode, void *ptr)
 		nassim.turndirection = 1;
 	if (keycode == KEY_LEFT)
 		nassim.turndirection = -1;
+    if (keycode == W)
+		nassim.walkdirection = 1; // walkDirection
+	if (keycode == S)
+		nassim.walkdirection = -1;
+	if (keycode == D)
+		nassim.turndirection = 1; // turnDirection
+	if (keycode == A)
+		nassim.turndirection = -1;
 	return (1);
 }
 
@@ -33,6 +41,14 @@ int			key_release_hook(int keycode, void *ptr)
 	if (keycode == KEY_RIGHT)
 		nassim.turndirection = 0;
 	if (keycode == KEY_LEFT)
+		nassim.turndirection = 0;
+    if (keycode == W)
+		nassim.walkdirection = 0; // walkDirection
+	if (keycode == S)
+		nassim.walkdirection = 0;
+	if (keycode == D)
+		nassim.turndirection = 0; // turnDirection
+	if (keycode == A)
 		nassim.turndirection = 0;
 	return (1);
 }
@@ -366,7 +382,7 @@ int            ft_update()
     cast();
     ft_draw_sprites();
     //ft_handle_bmp();
-    exit(0);
+    //exit(0);
     mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
     return (0);
 }
@@ -412,8 +428,19 @@ void    init_struct()
 
 }
 
-int             main(int ac , char **av)
+int             main(int argc, char **argv)
 {
+    int		len;
+
+    if (!(cub = (t_cub *)malloc(sizeof(t_cub))))
+		exit_game(cub, 6);
+	ft_bzero(cub, sizeof(t_cub));
+	if (argc < 2 || argc > 3)
+		exit_game(cub, 1);
+	else if (!(len = ft_strlen(argv[1]) - 4))
+		exit_game(cub, 2);
+	else if (ft_strncmp(argv[1] + len, ".cub", 4))
+		exit_game(cub, 3);
     char **tmp;
     game_data.big_colon = 0;
     game_data.big_line = 0;  

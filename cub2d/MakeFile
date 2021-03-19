@@ -6,8 +6,30 @@
 #    By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/16 19:15:45 by nabboudi          #+#    #+#              #
-#    Updated: 2021/03/16 19:15:46 by nabboudi         ###   ########.fr        #
+#    Updated: 2021/03/19 17:00:09 by nabboudi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-make -C libft re 
+.PHONY: all fclean clean re
+NAME = cub3D
+CC = gcc 
+FLAGS = 
+SRC = 	cub3d.c ft_readmap2.c sprites.c ft_exit.c ft_bmo.c circle.c readmaps.c get_next_line/get_next_line.h libft/libft.h libft.a get_next_line/get_next_line*.c \
+
+FRAMWORK = -lmlx -framework appkit -framework opengl   -D BUFFER_SIZE=1000
+
+all : $(NAME)
+
+$(NAME):
+	$(CC)  $(FLAGS) $(SRC) $(LIB)  $(FRAMWORK)
+
+fclean: clean
+	rm -f $(NAME)
+	make -C libft/ fclean
+	
+clean:
+	make -C libft/ clean
+re: fclean all
+
+libft: 
+	make -C libtf/

@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 16:53:17 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/17 12:25:59 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:57:17 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@
 # define KEY_LEFT		123
 # define KEY_DOWN		125
 # define KEY_UP			126
+# define W 13
+# define S 1
+# define D 2
+# define A 0
 # define TILE_SIZE      64
 # define PI 3.14
 # define FOV_ANGLE (60 * (PI / 180))
@@ -151,28 +155,30 @@ float	distance(float x1, float y1, float x2, float y2);
 int     hasspriteAt(float x, float y);
 t_cub   game_data;
 t_color color;
+t_cub   *cub;
 void    *mlx;
 void    *mlx_win;
 void    ft_readmap(void);
 void    ft_draw_sprites(void);
-void			init_sprites(void);
-void			ft_handle_bmp(void);
-char **fill_map();
-void free_array(char **tab);
-void        ft_draw_texture(t_image ptr, int col, float offset, float wallstripheight);
-void		ft_empty_trash(float rayangle, int col);
-void		get_text_data(void);
-void		init_textures(void);
+void	init_sprites(void);
+void	ft_handle_bmp(void);
+char    **fill_map();
+void    free_array(char **tab);
+void    ft_draw_texture(t_image ptr, int col, float offset, float wallstripheight);
+void	ft_empty_trash(float rayangle, int col);
+void	get_text_data(void);
+void	init_textures(void);
 unsigned int		shadow(unsigned int color, int col);
-unsigned int	rgb_to_int(unsigned int r, unsigned int g, unsigned int b);
-void            my_mlx_pixel_put(t_data *data, int x, int y, int color);
+unsigned int	    rgb_to_int(unsigned int r, unsigned int g, unsigned int b);
+void                   my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void    split_tab(char *line);
 void    ressolution(int* x , int* y, char **tab);
-void save_path(char **path, char **text, char **tab);
-void save_color(char *line, char **tab, char **color_floor);
+void    save_path(char **path, char **text, char **tab);
+void    save_color(char *line, char **tab, char **color_floor);
 char    **ft_realloc(char **tab, char *element);
-void       ft_split2(char* tab);
-char			**ft_split(const char *str, char c);
-void       ft_splitc(char* tab);
-void	free_tab(char **tab);
+void    ft_split2(char* tab);
+char    **ft_split(const char *str, char c);
+void    ft_splitc(char* tab);
+void    free_tab(char **tab);
+int		exit_game(t_cub *cub, int e);
 #endif

@@ -6,7 +6,7 @@
 /*   By: nabboudi <nabboudi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/13 15:09:44 by nabboudi          #+#    #+#             */
-/*   Updated: 2021/03/16 19:02:03 by nabboudi         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:11:00 by nabboudi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void			ft_draw_sprites(void)
 	ft_sort_sprites();
 	i = 0;
 	// draw each sprite 
-	while (i <game_data.nb_of_sprites)
+	while (i < game_data.nb_of_sprites)
 		ft_sprite(i++);
 }
  
